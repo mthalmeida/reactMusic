@@ -1,0 +1,239 @@
+/* Página de edição de perfil com design moderno e minimalista */
+
+[data-testid="page-profile-edit"] {
+  min-height: 100vh;
+  background: var(--primary-bg);
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Container principal do conteúdo */
+.profile-edit-content {
+  flex: 1;
+  padding: 40px 24px;
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Título da página */
+.profile-edit-title {
+  color: var(--text-primary);
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 40px;
+  background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-blue) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Card de edição */
+.profile-edit-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 8px 32px var(--shadow-heavy);
+  backdrop-filter: blur(10px);
+}
+
+/* Formulário */
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Grupo de input */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-label {
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  margin-left: 4px;
+}
+
+.input-field {
+  width: 100%;
+  height: 48px;
+  background: var(--secondary-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 0 16px;
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 400;
+  transition: all 0.3s ease;
+}
+
+.input-field::placeholder {
+  color: var(--text-muted);
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--accent-purple);
+  background: var(--card-bg);
+  box-shadow: 0 0 0 3px var(--shadow-light);
+}
+
+/* Textarea para descrição */
+.textarea-field {
+  width: 100%;
+  min-height: 120px;
+  background: var(--secondary-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 16px;
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 400;
+  font-family: inherit;
+  resize: vertical;
+  transition: all 0.3s ease;
+}
+
+.textarea-field::placeholder {
+  color: var(--text-muted);
+}
+
+.textarea-field:focus {
+  outline: none;
+  border-color: var(--accent-purple);
+  background: var(--card-bg);
+  box-shadow: 0 0 0 3px var(--shadow-light);
+}
+
+/* Botões */
+.buttons-container {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.save-button {
+  flex: 1;
+  background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-blue) 100%);
+  color: var(--text-primary);
+  border: none;
+  border-radius: 12px;
+  padding: 16px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.save-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--shadow-medium);
+}
+
+.save-button:disabled {
+  background: var(--border-color);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.save-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.save-button:hover:not(:disabled)::before {
+  left: 100%;
+}
+
+.cancel-button {
+  flex: 1;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 16px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cancel-button:hover {
+  background: var(--secondary-bg);
+  color: var(--text-primary);
+  border-color: var(--accent-purple);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .profile-edit-content {
+    padding: 32px 16px;
+  }
+
+  .profile-edit-title {
+    font-size: 28px;
+    margin-bottom: 32px;
+  }
+
+  .profile-edit-card {
+    padding: 24px;
+  }
+
+  .buttons-container {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .save-button,
+  .cancel-button {
+    padding: 14px 24px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-edit-content {
+    padding: 24px 12px;
+  }
+
+  .profile-edit-title {
+    font-size: 24px;
+    margin-bottom: 24px;
+  }
+
+  .profile-edit-card {
+    padding: 20px;
+  }
+
+  .input-field,
+  .textarea-field {
+    font-size: 15px;
+  }
+
+  .save-button,
+  .cancel-button {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+} 

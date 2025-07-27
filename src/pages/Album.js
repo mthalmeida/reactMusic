@@ -1,109 +1,145 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Header from '../Components/Header';
 import musicsAPI from '../services/musicsAPI';
 import MusicCard from '../Components/MusicCard';
 import Loading from '../Components/Loading';
 import { addSong, removeSong, getFavoriteSongs } from '../services/favoriteSongsAPI';
+import './styles/album.css';
+import { MusicPlayerProvider, useMusicPlayer } from '../contexts/MusicPlayerContext';
 
-export default class Album extends Component {
+function AlbumPageWrapper(props) {
+  const musicPlayer = useMusicPlayer();
+  return <Album {...props} musicPlayer={musicPlayer} />;
+}
+
+class Album extends Component {
   constructor() {
     super();
     this.state = {
-      loading: false,
       musics: [],
-      favoritelist: [],
-      album: [],
+      loading: true,
+      album: {},
+      favoriteSongs: [],
+      isMobile: false,
     };
   }
 
   componentDidMount() {
-    const { match } = this.props;
-    const { params } = match;
-    this.musicsAPI(params.id);
+    this.fetchAlbumData();
+    this.checkScreenSize();
+    window.addEventListener('resize', this.checkScreenSize);
   }
 
-  musicsAPI = async (id) => {
-    const list = await musicsAPI(id);
-    const callListFavorite = await getFavoriteSongs();
-    this.setState({
-      album: list[0],
-      musics: list.slice(1),
-      favoritelist: callListFavorite,
-    }, () => this.setState({ loading: false }));
-  };
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.checkScreenSize);
+  }
 
-  checkTrue = (musicFav) => {
-    const { favoritelist } = this.state;
-    return favoritelist.some((fav) => fav.trackId === musicFav?.trackId);
-  };
+  checkScreenSize = () => {
+    const isMobile = window.innerWidth <= 768;
+    this.setState({ isMobile });
+  }
 
-  synchronizationWithLoad = async (musicFav) => {
-    const { favoritelist } = this.state;
-    // Ao check ficar true, faz um sincronismo entre tela de loading
-    // e atualiza listagem de favoritos
-
-    if (this.checkTrue(musicFav)) {
-      this.setState({ loading: true });
-
-      // Chamando função externa no arquivo musicsAPI.js
-      await removeSong(musicFav);
-      const removeItemList = favoritelist.filter((e) => e.trackId !== musicFav?.trackId);
+  fetchAlbumData = async () => {
+    const { match } = this.props;
+    const { id } = match.params;
+    try {
+      const results = await musicsAPI(id);
+      const albumInfo = results[0];
+      const musicTracks = results.slice(1).filter(track => 
+        track.kind === 'song' && 
+        track.trackName && 
+        track.previewUrl && 
+        track.trackId
+      );
       this.setState({
+        musics: musicTracks,
+        album: albumInfo || {},
         loading: false,
-        favoritelist:
-        removeItemList,
       });
-    } else {
-      this.setState({ loading: true });
-
-      // Chamando função externa no arquivo musicsAPI.js
-      await addSong(musicFav);
-      this.setState((prevState) => ({ loading: false,
-        favoritelist: [...prevState.favoritelist, musicFav] }));
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (user && user.name) {
+        const favoriteSongs = await getFavoriteSongs(user.name);
+        this.setState({ favoriteSongs });
+      }
+    } catch (error) {
+      console.error('Erro ao carregar dados do álbum:', error);
+      this.setState({ loading: false });
     }
-  };
+  }
+
+  checkTrue = (item) => {
+    const { favoriteSongs } = this.state;
+    return favoriteSongs.some((music) => music.trackId === item.trackId);
+  }
+
+  synchronizationWithLoad = async (item) => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user || !user.name) return;
+    const { favoriteSongs } = this.state;
+    const isFavorite = favoriteSongs.some((music) => music.trackId === item.trackId);
+    if (isFavorite) {
+      await removeSong(user.name, item);
+      const updatedFavorites = favoriteSongs.filter((music) => music.trackId !== item.trackId);
+      this.setState({ favoriteSongs: updatedFavorites });
+    } else {
+      await addSong(user.name, item);
+      this.setState({ favoriteSongs: [...favoriteSongs, item] });
+    }
+  }
+
+  handlePlayTrack = (trackId) => {
+    const { musics } = this.state;
+    const { musicPlayer } = this.props;
+    const index = musics.findIndex((m) => m.trackId === trackId);
+    if (index !== -1 && musicPlayer) {
+      // Adiciona artworkUrl100 do álbum se não houver na música
+      const musicsWithArt = musics.map(m => ({ ...m, artworkUrl100: m.artworkUrl100 || this.state.album.artworkUrl100 }));
+      musicPlayer.setTrackList(musicsWithArt, index);
+    }
+  }
 
   render() {
     const { musics, loading, album } = this.state;
-
+    if (loading) {
+      return <Loading />;
+    }
     return (
       <div data-testid="page-album">
-        <Header />
-        {loading ? <Loading /> : (
+        <div className="album-info">
+          <img
+            className="album-cover-title"
+            src={album.artworkUrl100?.replace('100x100', '300x300') || album.artworkUrl100 || 'https://via.placeholder.com/300x300'}
+            alt={album.collectionName || 'Álbum'}
+            style={{ width: '100px', height: '100px', borderRadius: '12px', objectFit: 'cover', marginRight: '16px' }}
+          />
           <div>
-            <p
-              className="artist-name"
-              data-testid="artist-name"
-            >
-              {album.artistName}
-            </p>
-
-            <p
-              className="album-name"
-              data-testid="album-name"
-            >
-              {album.collectionName}
-            </p>
-
-            {musics.map((item) => (<MusicCard
-              key={ item.trackName }
+            <p className="artist-name" data-testid="artist-name">{album.artistName}</p>
+            <p className="album-name" data-testid="album-name">{album.collectionName}</p>
+          </div>
+        </div>
+        <div className="musics-container">
+          {musics.map((item, idx) => (
+            <MusicCard
+              key={ item.trackId }
               { ...item }
               checked={ this.checkTrue(item) }
               synchronizationWithLoad={ this.synchronizationWithLoad }
-            />))}
-
-          </div>
-        )}
+              artworkUrl100={ item.artworkUrl100 || album.artworkUrl100 }
+              onPlay={this.handlePlayTrack}
+            />
+          ))}
+        </div>
       </div>
     );
   }
 }
 
+export default AlbumPageWrapper;
+
 Album.propTypes = {
   match: PropTypes.shape({
     params: PropTypes.shape({
-      id: PropTypes.string,
-    }),
+      id: PropTypes.string.isRequired,
+    }).isRequired,
   }).isRequired,
 };

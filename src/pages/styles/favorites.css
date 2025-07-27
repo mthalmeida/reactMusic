@@ -1,0 +1,97 @@
+/* Página de favoritos com design moderno e minimalista */
+
+[data-testid="page-favorites"] {
+  min-height: 100vh;
+  background: var(--primary-bg);
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Container principal do conteúdo */
+.favorites-content {
+  flex: 1;
+  padding: 40px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Título da página */
+.favorites-title {
+  color: var(--text-primary);
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 40px;
+  background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-blue) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Container das músicas favoritas */
+.favorites-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Mensagem quando não há favoritos */
+.no-favorites {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+  font-size: 18px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px var(--shadow-heavy);
+}
+
+.no-favorites-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .favorites-content {
+    padding: 32px 16px;
+  }
+
+  .favorites-title {
+    font-size: 28px;
+    margin-bottom: 32px;
+  }
+
+  .no-favorites {
+    padding: 40px 16px;
+    font-size: 16px;
+  }
+
+  .no-favorites-icon {
+    font-size: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .favorites-content {
+    padding: 24px 12px;
+  }
+
+  .favorites-title {
+    font-size: 24px;
+    margin-bottom: 24px;
+  }
+
+  .no-favorites {
+    padding: 32px 12px;
+    font-size: 14px;
+  }
+
+  .no-favorites-icon {
+    font-size: 32px;
+  }
+} 
