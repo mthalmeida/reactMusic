@@ -22,7 +22,30 @@ function CompactMusicPlayerWrapper() {
 }
 
 class App extends React.Component {
+  state = { isMobile: window.innerWidth <= 600 };
+
+  updateScreen = () => {
+    this.setState({ isMobile: window.innerWidth <= 600 });
+  };
+
+  componentDidMount() {
+    window.addEventListener('resize', this.updateScreen);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateScreen);
+  }
+
   render() {
+    if (!this.state.isMobile) {
+      return (
+        <div className="big-screen-block">
+          <div className="big-screen-content">
+            <h1>App disponível apenas para telas menores</h1>
+            <p>Por favor, acesse em um dispositivo móvel ou reduza a largura da janela para até 600px.</p>
+          </div>
+        </div>
+      );
+    }
     return (
       <MusicPlayerProvider>
         <BrowserRouter>
@@ -42,7 +65,7 @@ class App extends React.Component {
               <Route path="*" component={NotFound} />
             </Switch>
             {/* Navbar inferior - não aparece na página de login e 404 */}
-            <Route path={['/search', '/album', '/favorites', '/profile', '/player']}>
+            <Route path={["/search", "/album", "/favorites", "/profile", "/player"]}>
               <Header />
             </Route>
           </div>
