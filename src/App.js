@@ -48,28 +48,26 @@ class App extends React.Component {
     }
     return (
       <MusicPlayerProvider>
-        <BrowserRouter>
-          <div className="App">
-            <Route path="/">
-              <CompactMusicPlayerWrapper />
-            </Route>
-            <Switch>
-              <Route exact path="/" component={Login} />
-              <PrivateRoute path="/search" component={Search} />
-              <PrivateRoute path="/album/:id" component={Album} />
-              <PrivateRoute path="/favorites" component={Favorites} />
-              <PrivateRoute exact path="/profile" component={Profile} />
-              <PrivateRoute path="/profile/edit" component={ProfileEdit} />
-              {/* Nova rota para o player */}
-              <PrivateRoute path="/player" component={() => <MusicPlayer fullControls={true} />} />
-              <Route path="*" component={NotFound} />
-            </Switch>
-            {/* Navbar inferior - não aparece na página de login e 404 */}
-            <Route path={["/search", "/album", "/favorites", "/profile", "/player"]}>
-              <Header />
-            </Route>
-          </div>
-        </BrowserRouter>
+        <div className="App">
+          <Route path="/">
+            <CompactMusicPlayerWrapper />
+          </Route>
+          <Switch>
+            <Route exact path="/" component={Login} />
+            <PrivateRoute path="/search" component={Search} />
+            <PrivateRoute path="/album/:id" component={Album} />
+            <PrivateRoute path="/favorites" component={Favorites} />
+            <PrivateRoute exact path="/profile" component={Profile} />
+            <PrivateRoute path="/profile/edit" component={ProfileEdit} />
+            {/* Nova rota para o player */}
+            <PrivateRoute path="/player" component={() => <MusicPlayer fullControls={true} />} />
+            <Route path="*" component={NotFound} />
+          </Switch>
+          {/* Navbar inferior - não aparece na página de login e 404 */}
+          <Route path={["/search", "/album", "/favorites", "/profile", "/player"]}>
+            <Header />
+          </Route>
+        </div>
       </MusicPlayerProvider>
     );
   }
