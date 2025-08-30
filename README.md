@@ -1,6 +1,6 @@
 
 <div align="center">
-  <img width="250" alt="ReactMusic Logo" src="https://github.com/mthalmeida/ReactMusic/assets/logo.png">
+  <img width="250" alt="ReactMusic Logo" src="https://raw.githubusercontent.com/mthalmeida/reactMusic/refs/heads/master/public/logoApp.png">
 </div>
 
 # ReactMusic

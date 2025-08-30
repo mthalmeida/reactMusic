@@ -4,6 +4,7 @@ import Loading from '../Components/Loading';
 import './styles/search.css';
 import searchAlbumsAPI from '../services/searchAlbumsAPI';
 import getMusics from '../services/musicsAPI';
+import { getPopularAlbums, getPopularAlbumsByGenre } from '../services/popularAlbumsAPI';
 import { useMusicPlayer } from '../contexts/MusicPlayerContext';
 
 class Search extends Component {
@@ -112,26 +113,30 @@ class Search extends Component {
   // Função para buscar álbuns para cada sessão
   fetchSessions = async () => {
     this.setState({ loadingSessions: true });
-    // Função auxiliar para buscar álbuns
+    
+    // Função auxiliar para buscar álbuns por gênero
     const fetchAlbums = async (term, country = 'US') => {
       const url = `/itunes/search?term=${encodeURIComponent(term)}&entity=album`;
       const res = await fetch(url);
       const data = await res.json();
       return data.results || [];
     };
+    
     // Busca paralela para cada categoria
+    // Para "Em Alta", usa o serviço de álbuns populares reais do iTunes
     const [emAlta, brasil, evangelicas, pop, rock, sertanejo, funk, flashback, hiphop, eletronica] = await Promise.all([
-      fetchAlbums('top'),
-      fetchAlbums('top', 'BR'),
-      fetchAlbums('gospel', 'BR'),
-      fetchAlbums('pop'),
-      fetchAlbums('rock'),
-      fetchAlbums('sertanejo', 'BR'),
-      fetchAlbums('funk', 'BR'),
-      fetchAlbums('flashback'),
-      fetchAlbums('hip hop'),
-      fetchAlbums('electronic'),
+      getPopularAlbums(20), // Usa álbuns realmente populares do iTunes
+      getPopularAlbumsByGenre('brasil', 15),
+      getPopularAlbumsByGenre('gospel', 15),
+      getPopularAlbumsByGenre('pop', 15),
+      getPopularAlbumsByGenre('rock', 15),
+      getPopularAlbumsByGenre('sertanejo', 15),
+      getPopularAlbumsByGenre('funk', 15),
+      getPopularAlbumsByGenre('classic', 15),
+      getPopularAlbumsByGenre('hip hop', 15),
+      getPopularAlbumsByGenre('electronic', 15),
     ]);
+    
     this.setState({
       sessions: {
         emAlta,
