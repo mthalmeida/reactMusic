@@ -69,7 +69,7 @@ class Search extends Component {
     }
     // Debounce para evitar muitas requisições
     this.suggestionTimeout = setTimeout(async () => {
-      const response = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(value)}&entity=musicArtist&limit=5`);
+      const response = await fetch(`/itunes/search?term=${encodeURIComponent(value)}&entity=musicArtist&limit=5`);
       const data = await response.json();
       const artists = data.results.map((item) => item.artistName);
       // Remove duplicados
@@ -114,7 +114,7 @@ class Search extends Component {
     this.setState({ loadingSessions: true });
     // Função auxiliar para buscar álbuns
     const fetchAlbums = async (term, country = 'US') => {
-      const url = `https://itunes.apple.com/search?term=${encodeURIComponent(term)}&entity=album&limit=10&country=${country}`;
+      const url = `/itunes/search?term=${encodeURIComponent(term)}&entity=album&limit=10&country=${country}`;
       const res = await fetch(url);
       const data = await res.json();
       return data.results || [];
