@@ -114,7 +114,7 @@ class Search extends Component {
     this.setState({ loadingSessions: true });
     // Função auxiliar para buscar álbuns
     const fetchAlbums = async (term, country = 'US') => {
-      const url = `/itunes/search?term=${encodeURIComponent(term)}&entity=album&limit=10&country=${country}`;
+      const url = `/itunes/search?term=${encodeURIComponent(term)}&entity=album`;
       const res = await fetch(url);
       const data = await res.json();
       return data.results || [];

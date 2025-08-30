@@ -1,7 +1,8 @@
 const searchAlbumsAPI = async (artist) => {
   const artistNameURL = encodeURI(artist).replaceAll('%20', '+');
 
-  const getAlbumsAPI = `/itunes/search?entity=album&term=${artistNameURL}&attribute=allArtistTerm`;
+  const getAlbumsAPI = `/itunes/search?entity=album&term=${artistNameURL}`; // Removido attribute=allArtistTerm para simplificar a URL
+
 
   const APIResponse = await fetch(getAlbumsAPI);
 
